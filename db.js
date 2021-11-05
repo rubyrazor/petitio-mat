@@ -16,9 +16,15 @@ console.log("[db] Connecting to: ", database);
 module.exports.addSignature = (firstName, lastName, signature) => {
     console.log("addSignature got called");
     const q = `INSERT INTO signatories ("first name", "last name", signatures)
-                VALUES($1, $2, $3)`;
-    const params = [firstName, lastName, signature]; //changes values into strings so that they are not commands any more;
-    console.log(params);
+                VALUES($1, $2, $3)
+                RETURNING id`;
+    const params = [firstName, lastName, signature];
+    return db.query(q, params);
+};
+
+module.exports.getSignature = (signatureId) => {
+    const q = `SELECT signatures FROM signatories WHERE id = $1`;
+    const params = [signatureId];
     return db.query(q, params);
 };
 
@@ -33,7 +39,7 @@ module.exports.getCountOfSignatories = () => {
     return db.query(q);
 };
 
-//SEQUEL INJECTIONS
+//SQL INJECTIONS
 
 //SELECT * FROM actors --> MAY GET ENTIRE DATA
 //DROP TABLE IF CONTAINS "user"

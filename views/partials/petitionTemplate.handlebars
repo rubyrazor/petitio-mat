@@ -1,0 +1,25 @@
+<form action="" method="POST">
+    <div class="firstName">
+        <label for="firstName">Enter your first name.</label>
+        <input type="text" name="firstName" />
+    </div>
+    <div class="lastName">
+        <label for="lastName">Enter your last name.</label>
+        <input type="text" name="lastName" />
+    </div>
+    <div>
+        <input id="signature" type="hidden" name="signature" value="" />
+    </div>
+    <div>
+        <input id="submitButton" type="submit" />
+    </div>
+    <div>
+        <canvas id="canvas" width="600" height="300"></canvas>
+    </div>
+    {{#if errorMessage}}
+        <div>
+            <h1>Your first name, last name and signature are required to sign
+                the petition!</h1>
+        </div>
+    {{/if}}
+</form>
