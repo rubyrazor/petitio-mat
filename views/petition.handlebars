@@ -1,1 +1,20 @@
-{{>petitionTemplate}}
+<form action="" method="POST">
+    <div>
+        <input id="signature" type="hidden" name="signature" value="" />
+    </div>
+    <div>
+        <input id="submitButton" type="submit" />
+    </div>
+    <div>
+        <canvas id="canvas" width="600" height="300"></canvas>
+    </div>
+    {{!-- {{#if signatureMissing=true}}
+        <div>
+            <h1>Your signature is required to sign the petition!</h1>
+        </div>
+    {{#if errorWhenAddingSignature=true}}
+        <div>
+            <h1>Sorry, something went wrong. Please try agin.</h1>
+        </div>
+    {{/if}} --}}
+</form>

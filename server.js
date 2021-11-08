@@ -1,31 +1,26 @@
-//To DOs
-// (SOLVED)#1 Check how req.body of submit-form looks like, so I can pass the values accordingly to the addSignature function in the app.post request to the /petition route;
-// (SOLVED) #2 If POST request to /petition fails, add info that when rendering petition page a additional info should be displayed on that page that signature was unsuccessful (add error message)
-// #3 Sanitise input in post route (DOMPURIFY)
-
-//--------------
-
 const cookieSession = require("cookie-session");
 const db = require("./db");
 const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
+const { hash, compare } = require("./bc");
 
-let signatoriesCount;
-let signatories;
+// let signatoriesCount;
+// let signatories;
 let signatureAsUrl;
+let usersCount;
 
 //Setting handlebars as view engine
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
-// Logs basic information about all requests made to this server.
+// Logs basic information about all requests made to server.
 app.use((req, res, next) => {
     console.log(`${req.method} | ${req.url}`);
     next();
 });
 
-// Initial configuration: secret is used to to generate the second cookie used to verify the integrity of the first cookie.
+// Initial configuration: secret is used to to generate the second cookie used which, in turn, is used to verify the integrity of the first cookie.
 app.use(
     cookieSession({
         secret: `I'm always hangry.`,
@@ -33,83 +28,168 @@ app.use(
     })
 );
 
-// Sepecifies a directory or directories from which static content (e.g., html, css, images, js files, etc.) should be served.
+// Specifies a directory or directories from which static content (e.g., html, css, images, js files, etc.) should be served.
 app.use(express.static("./public"));
 
-// Waits for urlencoded request bodies (such as those that browsers automatically generate when forms using the POST method are submitted), parse them, and make the resulting object available as "req.body".
+// Waits for url-encoded request bodies (such as those that browsers automatically generate when forms using the POST method are submitted), parse them, and make the resulting object available as "req.body".
 app.use(
     express.urlencoded({
         extended: false,
     })
 );
 
-// #1 Requests through the /petition-route
-app.get("/", (req, res) => {
-    //Check for chookies if has already signed & if yes, redirect, if not, render /petition
-    if (req.session.signatureId) {
-        res.redirect("/thanks");
+// #1a GET requests to /register-route
+app.get("/register", (req, res) => {
+    let userId = req.session.userId;
+    let signature = req.session.signature;
+
+    if (signature) {
+        res.redirect("thanks");
+    } else if (userId) {
+        res.redirect("petition");
     } else {
-        res.render("petition");
+        res.render("register");
     }
 });
 
-app.post("/", (req, res) => {
-    let firstName = req.body.firstName;
-    let lastName = req.body.lastName;
-    let signature = req.body.signature;
-    console.log("signature: ", signature);
+// #1b Requests to /register-route
+app.post("/register", (req, res) => {
+    let first = req.body.first;
+    let last = req.body.last;
+    let password = req.body.password;
+    let email = req.body.email;
 
-    db.addSignature(firstName, lastName, signature)
-        .then((result) => {
-            req.session.signatureId = result.rows[0].id;
-            res.redirect("/thanks");
+    hash(password)
+        .then((hashedPw) => {
+            console.log("Got into first then");
+            db.addUser(first, last, email, hashedPw).then((result) => {
+                console.log("Got into second then");
+                req.session.userId = result.rows[0].id;
+                res.redirect("/petition");
+            });
         })
         .catch((err) => {
-            console.log(err);
-            res.render("petitionErrorMessage");
+            console.log("Exception in /register route", err);
+            res.status(500);
+            // res.render("/register", {
+            //     errorRegistering: true,
+            // });
         });
 });
 
-// #2 Requests through the /thanks-route
-app.get("/thanks", (req, res) => {
-    if (req.session.signatureId) {
-        Promise.all([
-            db.getCountOfSignatories(),
-            db.getSignature(req.session.signatureId),
-        ])
-            .then((result) => {
-                console.log("Result of Promise.all: ", result);
-                signatoriesCount = result[0].rows[0].count;
-                signatureAsUrl = result[1].rows[0].signatures;
-                console.log(signatureAsUrl);
-                res.render("thanks", {
-                    signatoriesCount,
-                    signatureAsUrl,
-                });
-            })
-            .catch((err) =>
-                console.log("Error in request through /thanks route: ", err)
-            );
+// #2a GET-request to /petition-route
+app.get("/petition", (req, res) => {
+    let userId = req.session.userId;
+    let signature = req.session.signature;
+
+    if (userId) {
+        if (signature) {
+            res.redirect("thanks");
+        } else {
+            res.render("petition");
+        }
     } else {
-        res.redirect("/");
+        res.redirect("/register");
     }
 });
 
-// #3 Requests through the /signatories-route
+// #2b POST Requests to /petition-route
+app.post("/petition", (req, res) => {
+    let userId = req.session.userId;
+    let signature = req.body.signature;
+
+    db.addSignature(userId, signature)
+        .then(() => {
+            req.session.signature = true;
+            res.redirect("/thanks");
+        })
+        .catch((err) => {
+            console.log("Exception in request to /petition route: ", err);
+            res.sendStatus(500);
+        });
+});
+
+// #3 GET request to /thanks-route
+app.get("/thanks", (req, res) => {
+    let userId = req.session.userId;
+    let signature = req.session.signature;
+
+    if (signature) {
+        Promise.all([db.getCountOfUsers(), db.getSignature(userId)])
+            .then((result) => {
+                usersCount = result[0].rows[0].count;
+                signatureAsUrl = result[1].rows[0].signature; //Have to check whether this is still true;
+                res.render("thanks", {
+                    usersCount,
+                    signatureAsUrl,
+                });
+            })
+            .catch((err) => {
+                console.log("Exception in request to /thanks route: ", err);
+                res.status(500);
+            });
+    } else if (userId) {
+        res.redirect("/petition");
+    } else {
+        res.redirect("/register");
+    }
+});
+
+// #4 GET request to /signatories-route
 app.get("/signatories", (req, res) => {
-    if (req.session.signatureId) {
-        console.log("I got in /signatories routes");
+    let userId = req.session.userId;
+    let signature = req.session.signature;
+    if (signature) {
         db.getSignatories()
             .then((result) => {
-                console.log("Log of signatories: ", result);
-                signatories = result.rows;
+                let signatories = [];
+                for (let i = 0; i < result.length; i++) {
+                    signatories.push(result[i]); //add .first + result[i].last
+                }
                 res.render("signatories", {
                     signatories,
                 });
             })
             .catch((err) => console.log("Error in getSignatories: ", err));
+    } else if (userId) {
+        res.redirect("/petition");
     } else {
-        res.redirect("/");
+        res.redirect("/register");
+    }
+});
+
+// #5a GET request to /LOGIN-route
+app.get("/login", (req, res) => {
+    res.render("/login");
+});
+
+// #5b POST request to /LOGIN-route
+app.post("/login", (req, res) => {
+    let password = req.body.password;
+    let email = req.body.email;
+
+    if (password && email) {
+        db.getStoredPassword(email)
+            .then((storedPassword) => {
+                compare(password, storedPassword);
+            })
+            .then((result) => {
+                if (result) {
+                    res.redirect("/petition");
+                } else {
+                    res.render("/login", {
+                        falseDataProvided: true,
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log("Exception in /login route: ", err);
+                res.status(500);
+            });
+    } else {
+        res.render("/login", {
+            notAllInformationRequired: true,
+        });
     }
 });
 
