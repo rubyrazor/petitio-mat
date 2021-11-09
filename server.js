@@ -133,7 +133,7 @@ app.post("/petition", (req, res) => {
     let userId = req.session.userId;
     let signature = req.body.signature;
 
-    db.addSignature(userID, signature)
+    db.addSignature(userId, signature)
         .then(() => {
             req.session.signature = true;
             res.redirect("/thanks");
@@ -249,7 +249,7 @@ app.post("/login", (req, res) => {
                         .catch((err) => {
                             console.log("Exception in /login route: ", err);
                             res.render("login", {
-                                err: true
+                                err: true,
                             });
                         });
                 } else {
