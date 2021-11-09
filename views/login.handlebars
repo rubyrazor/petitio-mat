@@ -1,16 +1,22 @@
 <form action="" method="POST">
     <div>
-        <label for="Enter an email address"></label>
-        <input type="text" name="email">
+        <label for="email">Enter your email address: </label>
+        <input type="text" name="email" />
     </div>
     <div>
-        <label for="password">Choose a password</label>
+        <label for="password">Enter your password: </label>
         <input type="text" name="password" />
     </div>
+    <div>
+        <input id="submitButton" type="submit" />
+    </div>
+    <div>
+        {{>errorMessage}}
+    </div>
 
-    {{/if falseDataProvided=true}}
+    {{!-- {{/if falseDataProvided=true}}
     <div>
         <h1>Please enter your email and password again.</h1>
     </div>
-    {{#if}}
+    {{#if}} --}}
 </form>

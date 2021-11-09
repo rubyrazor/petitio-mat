@@ -1,4 +1,13 @@
 <h1>List of Signatories</h1>
 {{#each signatories}}
-    <div>{{"first"}} {{"last"}}</div>
+    <div>{{this}}</div>
+    {{! Kind of update we need! }}
+    {{!-- {{#if age}}
+        ({{age}})
+    {{/if}} --}}
+
 {{/each}}
+
+<div>
+    {{>errorMessage}}
+</div>
