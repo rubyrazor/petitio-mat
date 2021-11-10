@@ -165,8 +165,9 @@ app.get("/profile/edit", (req, res) => {
 });
 
 app.post("/profile/edit", (req, res) => {
-    const { first, last, age, city, email, url, password } = req.body;
-    const { userId } = req.session;
+    let { first, last, age, city, email, url, password } = req.body;
+    let { userId } = req.session;
+    let userUpdatePromise;
 
     //SECURITY CHECKS
     let parsedAge = Number.parseInt(age);
@@ -175,6 +176,7 @@ app.post("/profile/edit", (req, res) => {
             err: true,
         });
     }
+
     if (Number.isNaN(parsedAge)) {
         parsedAge = undefined;
     }
@@ -184,22 +186,50 @@ app.post("/profile/edit", (req, res) => {
         return res.render("profile");
     }
 
-    let userUpdatePromise;
-
     if (password) {
         hash(password)
             .then((hashedPw) => {
-                db.updateUserWithPassword(first, last, email, hashedPw);
+                console.log(userId, first, last, email, hashedPw);
+
+                userUpdatePromise = db.updateUser(
+                    userId,
+                    first,
+                    last,
+                    email,
+                    hashedPw
+                );
             })
             .catch((err) => {
-                console.log("Exception in /register route", err);
+                console.log("Exception in /profile/edit route, hashPw", err);
                 res.render("register", {
                     err: true,
                 });
             });
     } else {
-        // #### HERE!!!!!!!!!!!!!!!!!!
+        db.getStoredPassword(email).then((result) => {
+            console.log(first, last, email);
+            console.log(result);
+            const storedPw = result.rows[0].hashed_pw;
+            userUpdatePromise = db.updateUser(
+                userId,
+                first,
+                last,
+                email,
+                storedPw
+            );
+        });
     }
+
+    Promise.all([userUpdatePromise, db.updateProfile(userId, age, city, url)])
+        .then(() => {
+            res.redirect("/thanks");
+        })
+        .catch((err) => {
+            console.log("Exception in /profile/edit route, Promise.all: ", err);
+            res.render("profile-edit", {
+                err: true,
+            });
+        });
 });
 
 // --------------------------- /PETITION route ---------------------------
@@ -263,6 +293,24 @@ app.get("/thanks", (req, res) => {
     } else {
         res.redirect("/register");
     }
+});
+
+// --------------------------- /SIGNATURE/DELETE route ---------------------------
+
+app.post("/signature/delete", (req, res) => {
+    const { userId } = req.session;
+
+    db.deleteSignature(userId)
+        .then(() => {
+            req.session.signature = false;
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log("Exception in signature/delete route: ", err);
+            res.render("petition", {
+                err: true,
+            });
+        });
 });
 
 // --------------------------- /SIGNATORIES route ---------------------------
@@ -330,7 +378,7 @@ app.post("/login", (req, res) => {
     if (password && email) {
         db.getStoredPassword(email)
             .then((result) => {
-                let storedPassword = result.rows[0].hashedpw;
+                let storedPassword = result.rows[0].hashed_pw;
                 return compare(password, storedPassword);
             })
             .then((result) => {

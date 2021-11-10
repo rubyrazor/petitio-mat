@@ -5,6 +5,12 @@
     src="{{signatureAsUrl}}"
     alt="Image of signature"
 />
+<form method="GET" action="/profile/edit">
+    <button>Update Profile</button>
+</form>
+<form method="POST" action="/signature/delete">
+    <button>Delete Signature</button>
+</form>
 <div>
     {{>errorMessage}}
 </div>

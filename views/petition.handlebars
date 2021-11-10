@@ -5,7 +5,13 @@
     <div>
         <input id="submitButton" type="submit" />
     </div>
+    <form method="GET" action="/profile/edit">
+        <button>Update Profile</button>
+    </form>
     <div>
         <canvas id="canvas" width="600" height="300"></canvas>
+    </div>
+    <div>
+        {{>errorMessage}}
     </div>
 </form>
