@@ -47,7 +47,7 @@ app.use(
 // req to /REGISTER route
 // ------
 
-app.get("/register", (req, res) => {
+app.get("/", (req, res) => {
     let userId = req.session.userId;
     let signature = req.session.signature;
 
@@ -60,7 +60,7 @@ app.get("/register", (req, res) => {
     }
 });
 
-app.post("/register", (req, res) => {
+app.post("/", (req, res) => {
     let first = req.body.first;
     let last = req.body.last;
     let password = req.body.password;
