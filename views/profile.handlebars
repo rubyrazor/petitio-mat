@@ -1,9 +1,17 @@
 <form method="POST">
-    <input name="age" type="number" placeholder="Age"> 
-    {{!-- type number is constraint on input, other ex. min="18", max="" --}}
-
-    <input name="age" type="text">
-    <input name="url" type="url"
-    
-    <button>Submit</button>
+    <div>
+        <input name="age" type="number" placeholder="Age" />
+    </div>
+    <div>
+        <input name="city" type="text" placeholder="City" />
+    </div>
+    <div>
+        <input name="url" type="url" placeholder="Webpage" />
+    </div>
+    <div>
+        <button>Submit</button>
+    </div>
+    <div>
+        {{>errorMessage}}
+    </div>
 </form>

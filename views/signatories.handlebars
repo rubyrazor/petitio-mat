@@ -1,11 +1,8 @@
 <h1>List of Signatories</h1>
-{{#each signatories}}
-    <div>{{this}}</div>
-    {{! Kind of update we need! }}
-    {{!-- {{#if age}}
-        ({{age}})
-    {{/if}} --}}
+{{#if city}}<h2>from city</h2>{{/city}}
 
+{{#each signatories}}
+    <div>{{#if url}} <a href="{{this.url}}">{{this.first}} {{this.last}}</a>{{else}}{{this.first}} {{this.last}}{{/if}} ({{#if this.age}}{{this.age}}{{/if}}{{#if this.city}}, <a href="/signatories/{{this.city}}">{{this.city}}</a>{{/if}})</div>
 {{/each}}
 
 <div>

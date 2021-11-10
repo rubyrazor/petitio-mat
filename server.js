@@ -2,7 +2,7 @@
 // #1 add return to all res. statements (usually you do not want to respond more than that, so you can avoid bugs);
 
 const cookieSession = require("cookie-session");
-const db = require("./db");
+const db = require("./db/db");
 const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
@@ -41,7 +41,10 @@ app.use(
     })
 );
 
-// #1a GET requests to /register-route
+// ------
+// req to /REGISTER route
+// ------
+
 app.get("/register", (req, res) => {
     let userId = req.session.userId;
     let signature = req.session.signature;
@@ -55,7 +58,6 @@ app.get("/register", (req, res) => {
     }
 });
 
-// #1b Requests to /register-route
 app.post("/register", (req, res) => {
     let first = req.body.first;
     let last = req.body.last;
@@ -64,11 +66,9 @@ app.post("/register", (req, res) => {
 
     hash(password)
         .then((hashedPw) => {
-            console.log("Got into first then");
             db.addUser(first, last, email, hashedPw).then((result) => {
-                console.log("Got into second then");
                 req.session.userId = result.rows[0].id;
-                res.redirect("/petition");
+                res.redirect("/profile");
             });
         })
         .catch((err) => {
@@ -79,40 +79,53 @@ app.post("/register", (req, res) => {
         });
 });
 
-// //
-// app.get("/profile", (req, res) => {
-//     return res.render("profile");
-// });
+// ------
+// req to /PROFILE route
+// ------
 
-// app.post("/profile", (req, res) => {
-//     let { age, city, url } = req.body;
+app.get("/profile", (req, res) => {
+    let userId = req.session.userId;
 
-//     //SECURITY CHECKS
-//     //#1 AGE
-//     //const parsedAge = Number.parseInt(age);
-//     // if ( parsedAge < 18)
+    if (userId) {
+        return res.render("profile");
+    } else {
+        res.redirect("/register");
+    }
+});
 
-//     // #2 URL
-//     if (!url.startsWith("http")) {
-//         url ="http://" + url;
-//         res.render("/profile", {
-//             error: "Please provide an HTTP url."
-//         });
-//     }
+app.post("/profile", (req, res) => {
+    let { age, city, url } = req.body;
+    let userId = req.session.userId;
 
-//     db.addProfile({ age, city, url })
-//         .then(() => {
-//             res.redirect("/petition");
-//         })
-//         .catch((err) => {
-//             console.log(err);
-//             res.render("profile", {
-//                 error: "Ouups, please try again!",
-//             });
-//         });
-// });
+    //SECURITY CHECKS
+    let parsedAge = Number.parseInt(age);
+    if (parsedAge < 18) {
+        res.render("profile", {
+            err: true,
+        });
+    }
 
-// #2a GET-request to /petition-route
+    if (url && !url.startsWith("http")) {
+        url = "http://" + url;
+        res.render("profile");
+    }
+
+    db.addProfile({ age, city, url, userId })
+        .then(() => {
+            res.redirect("/petition");
+        })
+        .catch((err) => {
+            console.log(err);
+            res.render("profile", {
+                err: true,
+            });
+        });
+});
+
+// -------
+// req to /PETITION route
+// -------
+
 app.get("/petition", (req, res) => {
     let userId = req.session.userId;
     let signature = req.session.signature;
@@ -128,7 +141,6 @@ app.get("/petition", (req, res) => {
     }
 });
 
-// #2b POST Requests to /petition-route
 app.post("/petition", (req, res) => {
     let userId = req.session.userId;
     let signature = req.body.signature;
@@ -146,7 +158,10 @@ app.post("/petition", (req, res) => {
         });
 });
 
-// #3 GET request to /thanks-route
+// ------
+// req to /THANKS route
+// ------
+
 app.get("/thanks", (req, res) => {
     let userId = req.session.userId;
     let signature = req.session.signature;
@@ -174,31 +189,27 @@ app.get("/thanks", (req, res) => {
     }
 });
 
-// #4 GET request to /signatories-route
+
+
+
+// --------------------------- /SIGNATORIES route --------------------------
+
+
 app.get("/signatories", (req, res) => {
     let userId = req.session.userId;
     let signature = req.session.signature;
 
     if (signature) {
-        db.getSignatoriesUserIds()
+        db.getSignatories()
             .then((result) => {
-                console.log("One: ", result);
-                return db.getSignatories(result);
-            })
-            .then((result) => {
-                let signatories = [];
-                for (let i = 0; i < result.length; i++) {
-                    signatories.push(
-                        result[i].rows[0].first + " " + result[i].rows[0].last
-                    );
-                }
-
+                let signatories = result.rows;
+                console.log(signatories);
                 res.render("signatories", {
                     signatories,
                 });
             })
             .catch((err) => {
-                console.log("Error in getSignatories: ", err);
+                console.log("Exception in /signatories route: ", err);
                 res.render("signatories", {
                     err: true,
                 });
@@ -210,12 +221,36 @@ app.get("/signatories", (req, res) => {
     }
 });
 
-// #5a GET request to /LOGIN-route
+app.get("/signatories/:city", (req, res) => {
+    const city = req.params.city;
+
+    db.getSignatories(city)
+        .then((result) => {
+            let signatories = result.rows;
+            console.log(signatories);
+            res.render("signatories", {
+                signatories,
+                city
+            });
+        })
+        .catch((err) => {
+            console.log("Exception in /signatories route: ", err);
+            res.render("signatories", {
+                err: true,
+            });
+        });
+});
+
+
+
+
+// --------------------------- /LOGIN route --------------------------
+
+
 app.get("/login", (req, res) => {
     res.render("login");
 });
 
-// #5b POST request to /LOGIN-route
 app.post("/login", (req, res) => {
     let password = req.body.password;
     let email = req.body.email;
@@ -261,4 +296,10 @@ app.post("/login", (req, res) => {
     }
 });
 
-app.listen(8080, () => console.log("Petition server running..."));
+// -----
+// kicking off SERVER
+// -----
+
+app.listen(process.env.PORT || 8080, () =>
+    console.log("Petition server running...")
+);

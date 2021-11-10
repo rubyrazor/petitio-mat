@@ -3,8 +3,7 @@ const dbUsername = "postgres";
 const dbUserPassword = "posgres";
 const database = "petition";
 
-const db = spicedPg(
-    `postgres:${dbUsername}:${dbUserPassword}@localhost:5432/${database}`
+const db = spicedPg( process.env.DATABASE_URL || `postgres:${dbUsername}:${dbUserPassword}@localhost:5432/${database}`
 );
 
 module.exports.addUser = (first, last, email, hashedPw) => {
@@ -26,7 +25,7 @@ module.exports.getCountOfUsers = () => {
 };
 
 module.exports.addSignature = (userId, signature) => {
-    const q = `INSERT INTO signatures (userId, signature)
+    const q = `INSERT INTO signatures (user_id, signature)
                 VALUES($1, $2)
                 RETURNING id`;
     const params = [userId, signature]; //Is it necessary to check signature as well?
@@ -34,24 +33,30 @@ module.exports.addSignature = (userId, signature) => {
 };
 
 module.exports.getSignature = (userId) => {
-    const q = `SELECT signature FROM signatures WHERE userId = $1`;
+    const q = `SELECT signature FROM signatures WHERE user_id = $1`;
     const params = [userId];
     return db.query(q, params);
 };
 
-module.exports.getSignatoriesUserIds = () => {
-    const q = `SELECT userId FROM signatures`;
-    return db.query(q);
-};
-
-module.exports.getSignatories = (objOfSignatoriesUserIds) => {
-    let arrOfSignatories = [];
-    for (let i = 0; i < objOfSignatoriesUserIds.rows.length; i++) {
-        let q = `SELECT first, last FROM users WHERE id = $1`;
-        let params = [objOfSignatoriesUserIds.rows[i].userid];
-        arrOfSignatories.push(db.query(q, params));
+module.exports.getSignatories = (city = "all") => {
+    if (city === "all") {
+        const q = `SELECT first, last, age, city, url
+                    FROM signatures
+                    JOIN users
+                    ON signatures.user_id = users.id
+                    JOIN profiles
+                    ON profiles.user_id = users.id`;
+        return db.query(q);
+    } else {
+        const q = `SELECT first, last, age, url
+                    FROM signatures
+                    JOIN users
+                    ON signatures.user_id = users.id
+                    JOIN profiles
+                    ON profiles.user_id = users.id
+                    WHERE city = ${city}`;
+        return db.query(q);
     }
-    return Promise.all(arrOfSignatories);
 };
 
 module.exports.getStoredPassword = (email) => {
@@ -67,13 +72,14 @@ module.exports.getUserIdByEmail = (email) => {
 };
 
 module.exports.checkIfSignatory = (userId) => {
-    const q = `SELECT id FROM signatures WHERE userId = $1`;
+    const q = `SELECT id FROM signatures WHERE user_id = $1`;
     const params = [userId];
     return db.query(q, params);
 };
 
-// module.exports.addProfile = ({ age, city, url }) => { //UserId should come from cookie-session
-
-//     cont params= [];
-//     return db.query( `$1, $2...` , [userId, age, city, url]);
-// }
+module.exports.addProfile = ({ age, city, url, userId }) => {
+    const q = `INSERT INTO profiles (age, city, url, user_id)
+                VALUES($1, $2, $3, $4)`;
+    const params = [age, city, url, userId];
+    return db.query(q, params);
+};
