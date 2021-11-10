@@ -1,5 +1,7 @@
-//TO DOS
-// #1 add return to all res. statements (usually you do not want to respond more than that, so you can avoid bugs);
+// --------------------------- TO DOs ---------------------------
+// #1 So far all the city data I add to the is forced to lower case; now I have to find a way to change the first letter to caps before inserting the data to the signatories template in GET /signatories route; see signatoriesByCity handlebars template for some guidance!
+// #2 Check how to handle if someone does leave a input field empty --> currently it is an empty string and then translated into / when retrieved from the database and displayed in the profile-edit tempalte. I have some checks in the POST /PROFILE route but I'm not sure whether this is the right solution
+//---------------------------------------------------
 
 const cookieSession = require("cookie-session");
 const db = require("./db/db");
@@ -7,10 +9,9 @@ const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
 const { hash, compare } = require("./bc");
-const { COOKIE_SECRET } = process.env || require("secret.json");
+const COOKIE_SECRET =
+    process.env.COOKIE_SECRET || require("./secrets.json").COOKIE_SECRET;
 
-// let signatoriesCount;
-// let signatories;
 let signatureAsUrl;
 let usersCount;
 
@@ -50,14 +51,15 @@ app.use(
         extended: false,
     })
 );
-
-// ------
-// req to /REGISTER route
-// ------
-
+//
+//
+//
+// --------------------------- /(REGISTER) route ---------------------------
+//
+//
 app.get("/", (req, res) => {
-    let userId = req.session.userId;
-    let signature = req.session.signature;
+    let { userId } = req.session;
+    let { signature } = req.session;
 
     if (signature) {
         res.redirect("thanks");
@@ -89,9 +91,7 @@ app.post("/", (req, res) => {
         });
 });
 
-// ------
-// req to /PROFILE route
-// ------
+// --------------------------- /PROFILE route ---------------------------
 
 app.get("/profile", (req, res) => {
     let userId = req.session.userId;
@@ -110,14 +110,17 @@ app.post("/profile", (req, res) => {
     //SECURITY CHECKS
     let parsedAge = Number.parseInt(age);
     if (parsedAge < 18) {
-        res.render("profile", {
+        return res.render("profile", {
             err: true,
         });
+    }
+    if (Number.isNaN(parsedAge)) {
+        parsedAge = undefined;
     }
 
     if (url && !url.startsWith("http")) {
         url = "http://" + url;
-        res.render("profile");
+        return res.render("profile");
     }
 
     db.addProfile({ age, city, url, userId })
@@ -132,9 +135,74 @@ app.post("/profile", (req, res) => {
         });
 });
 
-// -------
-// req to /PETITION route
-// -------
+// --------------------------- /PROFILE/EDIT route ---------------------------
+
+app.get("/profile/edit", (req, res) => {
+    const { userId } = req.session;
+
+    if (userId) {
+        db.getAllUserDataByUserId(userId)
+            .then((result) => {
+                const { first, last, age, city, email, url } = result.rows[0];
+                res.render("profile-edit", {
+                    first,
+                    last,
+                    age,
+                    city,
+                    email,
+                    url,
+                });
+            })
+            .catch((err) => {
+                console.log("Error in /profile/edit route: ", err);
+                res.render("profile-edit", {
+                    err: true,
+                });
+            });
+    } else {
+        res.redirect("/register");
+    }
+});
+
+app.post("/profile/edit", (req, res) => {
+    const { first, last, age, city, email, url, password } = req.body;
+    const { userId } = req.session;
+
+    //SECURITY CHECKS
+    let parsedAge = Number.parseInt(age);
+    if (parsedAge < 18) {
+        return res.render("profile", {
+            err: true,
+        });
+    }
+    if (Number.isNaN(parsedAge)) {
+        parsedAge = undefined;
+    }
+
+    if (url && !url.startsWith("http")) {
+        url = "http://" + url;
+        return res.render("profile");
+    }
+
+    let userUpdatePromise;
+
+    if (password) {
+        hash(password)
+            .then((hashedPw) => {
+                db.updateUserWithPassword(first, last, email, hashedPw);
+            })
+            .catch((err) => {
+                console.log("Exception in /register route", err);
+                res.render("register", {
+                    err: true,
+                });
+            });
+    } else {
+        // #### HERE!!!!!!!!!!!!!!!!!!
+    }
+});
+
+// --------------------------- /PETITION route ---------------------------
 
 app.get("/petition", (req, res) => {
     let userId = req.session.userId;
@@ -168,9 +236,7 @@ app.post("/petition", (req, res) => {
         });
 });
 
-// ------
-// req to /THANKS route
-// ------
+// --------------------------- /THANKS route ---------------------------
 
 app.get("/thanks", (req, res) => {
     let userId = req.session.userId;
@@ -199,7 +265,7 @@ app.get("/thanks", (req, res) => {
     }
 });
 
-// --------------------------- /SIGNATORIES route --------------------------
+// --------------------------- /SIGNATORIES route ---------------------------
 
 app.get("/signatories", (req, res) => {
     let userId = req.session.userId;
@@ -228,7 +294,7 @@ app.get("/signatories", (req, res) => {
 });
 
 app.get("/signatories/:city", (req, res) => {
-    const city = req.params.city;
+    const { city } = req.params;
 
     db.getSignatories(city)
         .then((result) => {
@@ -247,7 +313,7 @@ app.get("/signatories/:city", (req, res) => {
         });
 });
 
-// --------------------------- /LOGIN route --------------------------
+// --------------------------- /LOGIN route ---------------------------
 
 app.get("/login", (req, res) => {
     res.render("login");
@@ -298,9 +364,7 @@ app.post("/login", (req, res) => {
     }
 });
 
-// -----
-// kicking off SERVER
-// -----
+// --------------------------- SERVER ---------------------------
 
 app.listen(process.env.PORT || 8080, () =>
     console.log("Petition server running...")
