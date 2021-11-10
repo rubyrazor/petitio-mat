@@ -8,6 +8,8 @@ const app = express();
 const hb = require("express-handlebars");
 const { hash, compare } = require("./bc");
 
+const { COOKIE_SECRET } = process.env || require("secret.json");
+
 // let signatoriesCount;
 // let signatories;
 let signatureAsUrl;
@@ -26,7 +28,7 @@ app.use((req, res, next) => {
 // Initial configuration: secret is used to to generate the second cookie used which, in turn, is used to verify the integrity of the first cookie.
 app.use(
     cookieSession({
-        secret: `I'm always hangry.`,
+        secret: COOKIE_SECRET,
         maxAge: 1000 * 60 * 60 * 24 * 14,
     })
 );
@@ -189,11 +191,7 @@ app.get("/thanks", (req, res) => {
     }
 });
 
-
-
-
 // --------------------------- /SIGNATORIES route --------------------------
-
 
 app.get("/signatories", (req, res) => {
     let userId = req.session.userId;
@@ -230,7 +228,7 @@ app.get("/signatories/:city", (req, res) => {
             console.log(signatories);
             res.render("signatories", {
                 signatories,
-                city
+                city,
             });
         })
         .catch((err) => {
@@ -241,11 +239,7 @@ app.get("/signatories/:city", (req, res) => {
         });
 });
 
-
-
-
 // --------------------------- /LOGIN route --------------------------
-
 
 app.get("/login", (req, res) => {
     res.render("login");
