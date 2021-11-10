@@ -7,13 +7,21 @@ const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
 const { hash, compare } = require("./bc");
-
 const { COOKIE_SECRET } = process.env || require("secret.json");
 
 // let signatoriesCount;
 // let signatories;
 let signatureAsUrl;
 let usersCount;
+
+if (process.env.NODE_ENV == "production") {
+    app.use((req, res, next) => {
+        if (req.headers["x-forwarded-proto"].startsWith("https")) {
+            return next();
+        }
+        res.redirect(`https://${req.hostname}${req.url}`);
+    });
+}
 
 //Setting handlebars as view engine
 app.engine("handlebars", hb());
