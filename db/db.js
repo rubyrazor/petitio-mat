@@ -36,17 +36,22 @@ module.exports.getCountOfUsers = () => {
 
 module.exports.updateUser = (userId, first, last, email, hashedPw) => {
     if (!hashedPw) {
-        const q = `INSERT INTO users (id, first, last, email)
-                    VALUES ($1, $2, $3, $4)
-                    ON CONFLICT (id)
-                    DO UPDATE SET first = $2, last = $3, email = $4`;
+        const q = `UPDATE users
+                    SET first = $2,
+                        last = $3,
+                        email = $4
+                    WHERE id = $1`;
+        console.log(q);
         const params = [userId, first, last, email];
         return db.query(q, params);
     } else {
-        const q = `INSERT INTO users (id, first, last, email, hashed_pw)
-                    VALUES ($1, $2, $3, $4, $5)
-                    ON CONFLICT (id)
-                    DO UPDATE SET first = $2, last = $3, email = $4, hashed_pw = $5`;
+        const q = `UPDATE users
+                    SET first = $2,
+                        last = $3,
+                        email = $4,
+                        hashed_pw = $5
+                    WHERE id = $1`;
+        console.log(q);
         const params = [userId, first, last, email, hashedPw];
         return db.query(q, params);
     }
@@ -87,22 +92,29 @@ module.exports.deleteSignature = (userId) => {
     return db.query(q, params);
 };
 // --------------------------- PROFILES.SQL QUERIES ---------------------------
+function capitaliseFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 module.exports.addProfile = ({ age, city, url, userId }) => {
     const q = `INSERT INTO profiles (age, city, url, user_id)
                 VALUES($1, $2, $3, $4)`;
-    const cityWithoutCaps = city.toLowerCase();
-    const params = [age, cityWithoutCaps, url, userId];
+
+    const cityOnlyFirstLetterCaps = capitaliseFirstLetter(city.toLowerCase());
+    console.log(cityOnlyFirstLetterCaps);
+    const params = [age, cityOnlyFirstLetterCaps, url, userId];
     return db.query(q, params);
 };
 
-module.exports.updateProfile = (userId, age, city, url) => {
+module.exports.upsertProfile = (userId, age, city, url) => {
     const q = `INSERT INTO profiles (user_id, age, city, url)
                 VALUES ($1, $2, $3, $4)
                 ON CONFLICT (user_id)
                 DO UPDATE SET age = $2, city = $3, url = $4`;
-    const cityWithoutCaps = city.toLowerCase();
-    const params = [userId, age, cityWithoutCaps, url];
+
+    const cityOnlyFirstLetterCaps = capitaliseFirstLetter(city.toLowerCase());
+    console.log(cityOnlyFirstLetterCaps);
+    const params = [userId, age, cityOnlyFirstLetterCaps, url];
     return db.query(q, params);
 };
 
@@ -140,3 +152,15 @@ module.exports.getAllUserDataByUserId = (userId) => {
     const params = [userId];
     return db.query(q, params);
 };
+
+//REMAINS
+
+// `INSERT INTO users (id, first, last, email)
+//             VALUES ($1, $2, $3, $4)
+//             ON CONFLICT (id)
+//             DO UPDATE SET first = $2, last = $3, email = $4`;
+
+// `INSERT INTO users (id, first, last, email, hashed_pw)
+//         VALUES ($1, $2, $3, $4, $5)
+//         ON CONFLICT (id)
+//         DO UPDATE SET first = $2, last = $3, email = $4, hashed_pw = $5`;

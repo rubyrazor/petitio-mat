@@ -12,6 +12,10 @@ const { hash, compare } = require("./bc");
 const COOKIE_SECRET =
     process.env.COOKIE_SECRET || require("./secrets.json").COOKIE_SECRET;
 
+// const { authRouter } = require("./routers/auth-router.js");
+
+// app.use(authRouter);
+
 let signatureAsUrl;
 let usersCount;
 
@@ -144,6 +148,8 @@ app.get("/profile/edit", (req, res) => {
         db.getAllUserDataByUserId(userId)
             .then((result) => {
                 const { first, last, age, city, email, url } = result.rows[0];
+
+
                 res.render("profile-edit", {
                     first,
                     last,
@@ -165,8 +171,8 @@ app.get("/profile/edit", (req, res) => {
 });
 
 app.post("/profile/edit", (req, res) => {
-    let { first, last, age, city, email, url, password } = req.body;
     let { userId } = req.session;
+    let { first, last, email, password, age, city, url } = req.body;
     let userUpdatePromise;
 
     //SECURITY CHECKS
@@ -189,8 +195,6 @@ app.post("/profile/edit", (req, res) => {
     if (password) {
         hash(password)
             .then((hashedPw) => {
-                console.log(userId, first, last, email, hashedPw);
-
                 userUpdatePromise = db.updateUser(
                     userId,
                     first,
@@ -206,21 +210,10 @@ app.post("/profile/edit", (req, res) => {
                 });
             });
     } else {
-        db.getStoredPassword(email).then((result) => {
-            console.log(first, last, email);
-            console.log(result);
-            const storedPw = result.rows[0].hashed_pw;
-            userUpdatePromise = db.updateUser(
-                userId,
-                first,
-                last,
-                email,
-                storedPw
-            );
-        });
+        userUpdatePromise = db.updateUser(userId, first, last, email);
     }
 
-    Promise.all([userUpdatePromise, db.updateProfile(userId, age, city, url)])
+    Promise.all([userUpdatePromise, db.upsertProfile(userId, age, city, url)])
         .then(() => {
             res.redirect("/thanks");
         })
