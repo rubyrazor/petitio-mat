@@ -135,6 +135,7 @@ module.exports.getSignatories = (city) => {
         return db.query(q);
     } else {
         const cityWithoutCaps = city.toLowerCase();
+        console.log(cityWithoutCaps);
         const params = [cityWithoutCaps];
         q = mainQuery + " " + condition;
         console.log(q);
