@@ -35,7 +35,7 @@ router.post("/register", requireNotLoggedIn, (req, res) => {
 //
 // --------------------------- /LOGIN route ---------------------------
 
-router.get("/login", (req, res) => {
+router.get("/login", requireNotLoggedIn, (req, res) => {
     res.render("login");
 });
 

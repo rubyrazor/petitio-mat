@@ -26,10 +26,10 @@ app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
 // Logs basic information about all requests made to server.
-app.use((req, res, next) => {
-    console.log(`${req.method} | ${req.url}`);
-    next();
-});
+// app.use((req, res, next) => {
+//     console.log(`${req.method} | ${req.url}`);
+//     next();
+// });
 
 // Initial configuration: secret is used to to generate the second cookie used which, in turn, is used to verify the integrity of the first cookie.
 app.use(
@@ -54,6 +54,10 @@ app.use(authRouter);
 app.use(profileRouter);
 app.use(petitionRouter);
 
-app.listen(process.env.PORT || 8080, () =>
-    console.log("Petition server running...")
-);
+if (require.main == module) {
+    app.listen(process.env.PORT || 8080, () =>
+        console.log("I am listening...")
+    );
+}
+
+exports.app = app;
