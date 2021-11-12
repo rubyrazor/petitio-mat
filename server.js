@@ -1,6 +1,3 @@
-// --------------------------- TO DOs ---------------------------
-// --------------------------------------------------------------
-
 const cookieSession = require("cookie-session");
 const express = require("express");
 const app = express();
@@ -10,6 +7,7 @@ const COOKIE_SECRET =
 const { authRouter } = require("./routers/auth-router.js");
 const { profileRouter } = require("./routers/profile-router.js");
 const { petitionRouter } = require("./routers/petition-router.js");
+const { landingRouter } = require("./routers/landing-router.js");
 
 // ??
 if (process.env.NODE_ENV == "production") {
@@ -21,17 +19,17 @@ if (process.env.NODE_ENV == "production") {
     });
 }
 
-//Setting handlebars as view engine
+//Sets handlebars as view engine
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
 
-// Logs basic information about all requests made to server.
-// app.use((req, res, next) => {
-//     console.log(`${req.method} | ${req.url}`);
-//     next();
-// });
+// Logs basic info about all requests.
+app.use((req, res, next) => {
+    console.log(`${req.method} request to ${req.url}`);
+    next();
+});
 
-// Initial configuration: secret is used to to generate the second cookie used which, in turn, is used to verify the integrity of the first cookie.
+// Initial configuration of cookie session.
 app.use(
     cookieSession({
         secret: COOKIE_SECRET,
@@ -39,21 +37,23 @@ app.use(
     })
 );
 
-// Specifies a directory or directories from which static content (e.g., html, css, images, js files, etc.) should be served.
+// Specifies a directory to serve static content.
 app.use(express.static("./public"));
 
-// Waits for url-encoded request bodies (such as those that browsers automatically generate when forms using the POST method are submitted), parse them, and make the resulting object available as "req.body".
+// Parses url-encoded request bodies + makes them available as "req.body".
 app.use(
     express.urlencoded({
         extended: false,
     })
 );
 
-// Routing
+// Routers
+app.use(landingRouter);
 app.use(authRouter);
 app.use(profileRouter);
 app.use(petitionRouter);
 
+//Starts server + setup for SuperTest
 if (require.main == module) {
     app.listen(process.env.PORT || 8080, () =>
         console.log("I am listening...")

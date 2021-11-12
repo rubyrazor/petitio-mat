@@ -8,6 +8,10 @@ const db = spicedPg(
         `postgres:${dbUsername}:${dbUserPassword}@localhost:5432/${database}`
 );
 
+function FirstLetterCapsOnly(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 // --------------------------- USERS.SQL QUERIES ---------------------------
 
 module.exports.addUser = (first, last, email, hashedPw) => {
@@ -41,7 +45,6 @@ module.exports.updateUser = (userId, first, last, email, hashedPw) => {
                         last = $3,
                         email = $4
                     WHERE id = $1`;
-        console.log(q);
         const params = [userId, first, last, email];
         return db.query(q, params);
     } else {
@@ -51,7 +54,6 @@ module.exports.updateUser = (userId, first, last, email, hashedPw) => {
                         email = $4,
                         hashed_pw = $5
                     WHERE id = $1`;
-        console.log(q);
         const params = [userId, first, last, email, hashedPw];
         return db.query(q, params);
     }
@@ -91,20 +93,9 @@ module.exports.deleteSignature = (userId) => {
     const params = [userId];
     return db.query(q, params);
 };
+//
+//
 // --------------------------- PROFILES.SQL QUERIES ---------------------------
-function capitaliseFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-module.exports.addProfile = ({ age, city, url, userId }) => {
-    const q = `INSERT INTO profiles (age, city, url, user_id)
-                VALUES($1, $2, $3, $4)`;
-
-    const cityOnlyFirstLetterCaps = capitaliseFirstLetter(city.toLowerCase());
-    console.log(cityOnlyFirstLetterCaps);
-    const params = [age, cityOnlyFirstLetterCaps, url, userId];
-    return db.query(q, params);
-};
 
 module.exports.upsertProfile = (userId, age, city, url) => {
     const q = `INSERT INTO profiles (user_id, age, city, url)
@@ -112,12 +103,12 @@ module.exports.upsertProfile = (userId, age, city, url) => {
                 ON CONFLICT (user_id)
                 DO UPDATE SET age = $2, city = $3, url = $4`;
 
-    const cityOnlyFirstLetterCaps = capitaliseFirstLetter(city.toLowerCase());
-    console.log(cityOnlyFirstLetterCaps);
-    const params = [userId, age, cityOnlyFirstLetterCaps, url];
+    const cityFirstLetterCapsOnly = FirstLetterCapsOnly(city.toLowerCase());
+    const params = [userId, age, cityFirstLetterCapsOnly, url];
     return db.query(q, params);
 };
-
+//
+//
 // --------------------------- MIXED QUERIES ---------------------------
 
 module.exports.getSignatories = (city) => {
@@ -134,11 +125,9 @@ module.exports.getSignatories = (city) => {
         q = mainQuery;
         return db.query(q);
     } else {
-        const cityWithoutCaps = city.toLowerCase();
-        console.log(cityWithoutCaps);
-        const params = [cityWithoutCaps];
+        const cityFirstLetterCapsOnly = FirstLetterCapsOnly(city.toLowerCase());
+        const params = [cityFirstLetterCapsOnly];
         q = mainQuery + " " + condition;
-        console.log(q);
         return db.query(q, params);
     }
 };
@@ -153,15 +142,3 @@ module.exports.getAllUserDataByUserId = (userId) => {
     const params = [userId];
     return db.query(q, params);
 };
-
-//REMAINS
-
-// `INSERT INTO users (id, first, last, email)
-//             VALUES ($1, $2, $3, $4)
-//             ON CONFLICT (id)
-//             DO UPDATE SET first = $2, last = $3, email = $4`;
-
-// `INSERT INTO users (id, first, last, email, hashed_pw)
-//         VALUES ($1, $2, $3, $4, $5)
-//         ON CONFLICT (id)
-//         DO UPDATE SET first = $2, last = $3, email = $4, hashed_pw = $5`;

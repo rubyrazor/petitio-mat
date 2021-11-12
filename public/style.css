@@ -11,3 +11,22 @@
     width: 600px;
     height: 300px;
 }
+
+#good-deeds-container {
+    position: relative;
+}
+
+.good-deed {
+    height: 30px;
+}
+
+#frame {
+    position: relative;
+    height: 30px;
+    overflow: hidden;
+}
+
+.uneven {
+    background-color: red;
+    color: white;
+}

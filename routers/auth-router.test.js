@@ -32,20 +32,12 @@ test("GET /login redirects to /thanks if appropriate(logged in + signed)", () =>
         supertest(app).get("/login"),
         supertest(app).get("/petition"),
     ]).then((res) => {
+        console.log(res);
+        console.log("LOGGING RES[0]: ", res[0]);
+        console.log("LOGGING RES[1]: ", res[1]);
         expect(res[0].statusCode).toBe(302);
         expect(res[0].headers.location.endsWith("/petition")).toBe(true);
         expect(res[1].statusCode).toBe(302);
         expect(res[1].headers.location.endsWith("/thanks")).toBe(true);
     });
-    // return supertest(app)
-    //     .get("/login")
-    //     .then((res) => {
-    //         expect(res.statusCode).toBe(302);
-    //         expect(res.headers.location.endsWith("/petition")).toBe(true);
-    //     })
-    //     .get("/petition")
-    //     .then((res) => {
-    //         expect(res.statusCode).toBe(302);
-    //         expect(res.headers.location.endsWith("/thanks")).toBe(true);
-    //     });
 });

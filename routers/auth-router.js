@@ -1,8 +1,10 @@
 const express = require("express");
+const router = express.Router();
 const { requireNotLoggedIn } = require("../middleware/auth");
 const { hash, compare } = require("../bc");
 const db = require("../db/db");
-const router = express.Router();
+
+module.exports.authRouter = router;
 
 //
 // --------------------------- /REGISTER route ---------------------------
@@ -80,5 +82,3 @@ router.post("/login", requireNotLoggedIn, (req, res) => {
             });
     }
 });
-
-module.exports.authRouter = router;

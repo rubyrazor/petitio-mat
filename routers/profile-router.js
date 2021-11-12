@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { requireLoggedIn } = require("../middleware/auth");
 const db = require("../db/db");
-const { hash, compare } = require("../bc");
-
+const { hash } = require("../bc");
 
 // --------------------------- /PROFILE route ---------------------------
 
@@ -31,7 +30,7 @@ router.post("/profile", requireLoggedIn, (req, res) => {
         return res.render("profile");
     }
 
-    db.addProfile({ age, city, url, userId })
+    db.upsertProfile(userId, age, city, url)
         .then(() => {
             res.redirect("/petition");
         })
@@ -62,7 +61,10 @@ router.get("/profile/edit", requireLoggedIn, (req, res) => {
             });
         })
         .catch((err) => {
-            console.log("Exception in POST /profile/edit --> db.getAllUserDataByUserId: ", err);
+            console.log(
+                "Exception in POST /profile/edit --> db.getAllUserDataByUserId: ",
+                err
+            );
             res.render("profile-edit", {
                 err: true,
             });
