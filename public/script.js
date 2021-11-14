@@ -27,41 +27,64 @@
         });
     }
 
-    // --------------------------- Good deeds roulette ----------------------------
-
+    // --------------------------- PETITIO-MAT ----------------------------
     let goodDeedsContainer = $("#good-deeds-container");
-    let top = goodDeedsContainer.position().top;
-    console.log(top);
-    let count = 0;
-    let randomNumber = 300 + Math.floor(Math.random() * 90);
 
-    function moveDeeds() {
-        let goodDeeds = $(".good-deed");
-        count++;
-        if (count < randomNumber) {
-            top = top - 4;
-        } else if (count < randomNumber + 60) {
-            top = top - 3;
-        } else if (count < randomNumber + 120) {
-            top = top - 2;
-        } else {
-            if(top === 0) {
-                return;
+    if (false) {
+        let top = goodDeedsContainer.position().top;
+        let count = 0;
+        let randomNumber = 300 + Math.floor(Math.random() * 90);
+
+        function moveDeeds() {
+            let goodDeeds = $(".good-deed");
+            count++;
+            if (count < randomNumber) {
+                top = top - 4;
+            } else if (count < randomNumber + 60) {
+                top = top - 3;
+            } else if (count < randomNumber + 120) {
+                top = top - 2;
+            } else {
+                if (top === 0) {
+                    return;
+                }
+                top = top - 1;
             }
-            top = top -1; 
-        }
-        console.log(top);
+            console.log(top);
 
-        if (top <= -goodDeeds.eq(0).outerHeight()) {
-            top += goodDeeds.eq(0).outerHeight();
-            goodDeedsContainer.append(goodDeeds.eq(0));
-        }
-        goodDeedsContainer.css({
-            top: top + "px",
-        });
+            if (top <= -goodDeeds.eq(0).outerHeight()) {
+                top += goodDeeds.eq(0).outerHeight();
+                goodDeedsContainer.append(goodDeeds.eq(0));
+            }
+            goodDeedsContainer.css({
+                top: top + "px",
+            });
 
-        requestAnimationFrame(moveDeeds);
+            requestAnimationFrame(moveDeeds);
+        }
+        moveDeeds();
     }
 
-    moveDeeds();
-})();
+    // --------------------------- JINGLE-TICKER ----------------------------
+
+//     let jingleTickerContainer = $("#jingle-ticker-container");
+
+//     function moveJingle() {
+//         let jingleText = $(".jingle-text");
+//         let left = jingleText.offset().left;
+//         left--;
+
+//         console.log("Hello!");
+
+//         if (left <= -jingleText.eq(0).outerWidth()) {
+//             left += jingleText.eq(0).outerWidth();
+//             jingleTickerContainer.append(jingleText.eq(0));
+//         }
+//         jingleText.css({
+//             left: left + "px",
+//         });
+//         requestAnimationFrame(moveJingle);
+//     }
+
+//     moveJingle();
+// })();
