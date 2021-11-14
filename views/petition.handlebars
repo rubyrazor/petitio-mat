@@ -1,17 +1,22 @@
-<form action="" method="POST">
+<div class="header-container">
+    <div class="header-text">Third step: Lend us your voice! </div>
+</div>
+
+<form class="main-container petition" method="POST">
     <div>
-        <input id="signature" type="hidden" name="signature" value="" />
+        <div>
+            <input id="signature" type="hidden" name="signature" value="" />
+        </div>
+        <div>
+            <canvas id="canvas" width="600" height="250"></canvas>
+        </div>
     </div>
     <div>
-        <input id="submitButton" type="submit" />
-    </div>
-    <form method="GET" action="/profile/edit">
-        <button>Update Profile</button>
-    </form>
-    <div>
-        <canvas id="canvas" width="600" height="300"></canvas>
+        <input class="submit-button" type="submit" />
     </div>
     <div>
         {{>errorMessage}}
     </div>
 </form>
+<div class="button-container">
+</div>

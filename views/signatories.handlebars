@@ -1,10 +1,15 @@
-<h1>List of Signatories</h1>
-{{#if city}}<h2>from {{city}}</h2>{{/if}}
+<div class="header-container">
+    <div class="header-text">List of Signatories{{#if city}}<div>from {{city}}</div>{{/if}}
+    </div>
+</div>
 
-{{#each signatories}}
-    <div>{{#if url}} <a href="{{this.url}}">{{this.first}} {{this.last}}</a>{{else}}{{this.first}} {{this.last}}{{/if}} ({{#if this.age}}{{this.age}}{{/if}}{{#if this.city}}, <a href="/signatories/{{this.city}}">{{this.city}}</a>{{/if}})</div>
-{{/each}}
+<div class="main-container signatories">
+    {{#each signatories}}
+        <div class="signatories">{{#if url}} <a class="webpage-link" href="{{this.url}}">{{this.first}} {{this.last}}</a>{{else}}{{this.first}} {{this.last}}{{/if}} ({{#if this.age}}{{this.age}}{{/if}}{{#if this.city}},<a class="signatories-by-city-link" href="/signatories/{{this.city}}">{{this.city}})</a>{{/if}}</div>
+    {{/each}}
+</div>
 
-<div>
+<div class="button-container">
     {{>errorMessage}}
 </div>
+

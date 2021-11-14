@@ -1,28 +1,50 @@
-<h1>Many thanks for singning.</h1>
-<a href="signatories">See all {{usersCount}} signatories</a>
-<img
-    id="signatureThanksPage"
-    src="{{signatureAsUrl}}"
-    alt="Image of signature"
-/>
+<div class="header-container">
+    <div class="header-text">Fourth step: Find out what you've raised your voice for! </div>
+</div>
 
-<div id="frame">
-    <div id="good-deeds-container">
-            <h3 class="good-deed uneven">amazon!</h3>
-            <h3 class="good-deed even">dolphins!</h3>
-            <h3 class="good-deed uneven">elephants!</h3>
-            <h3 class="good-deed even">Great Barrier Reef!</h3>
-            <h3 class="good-deed uneven">Cuba!</h3>
+<div class="main-container-thanks-page">
+    <div id="helper-div1">
+    {{!-- <div class="header-text"> Thank you for raising your voice for:</div> --}}
+        <div id="frame">
+            <div id="good-deeds-container">
+                    <h3 class="good-deed uneven">
+                        <div class="helper-div3">
+                        Billionaires <br> in Need
+                        </div>
+                        </h3>
+                    <h3 class="good-deed even">Give Everyone Their <br> Birthday Off</h3>
+                    <h3 class="good-deed uneven">More<br>Neutrality</h3>
+                    <h3 class="good-deed even">Changing No <br> To Yesn't</h3>
+                    <h3 class="good-deed uneven">A Cloned <br> Dinausor Park</h3>
+                    <h3 class="good-deed even">Removing The "D" <br> From Wednesday</h3>
+            </div>
+        </div>
+        <div id="helper-div4">
+        </div>
+    </div>
+    <div id="helper-div2">
+        <div>
+            <button id="canvas-button" class="submit-button" type="submit">Click Here To Find Out!</button>
+        </div>
+        <form method="POST" action="/signature/delete">
+            <button id="delete-signature" class="submit-button">Delete Signature</button>
+        </form>
     </div>
 </div>
 
 
-<form method="GET" action="/profile/edit">
-    <button>Update Profile</button>
-</form>
-<form method="POST" action="/signature/delete">
-    <button>Delete Signature</button>
-</form>
 <div>
     {{>errorMessage}}
+</div>
+
+<div class="button-container">
+    <img
+        id="signatureThanksPage"
+        src="{{signatureAsUrl}}"
+        alt="Image of signature"
+    />
+    <a class="link" href="signatories">See all {{usersCount}} Signatories</a>
+    <form method="GET" action="/profile/edit">
+        <button class="submit-button">Update Profile</button>
+    </form>
 </div>

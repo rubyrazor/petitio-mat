@@ -1,17 +1,23 @@
-<form method="POST">
+<div class="header-container">
+    <div class="header-text">Second step: Further Information </div>
+</div>
+
+<form class="main-container" method="POST">
     <div>
-        <input name="age" type="number" placeholder="Age" /> 
+        <input class="input-field" name="age" type="number" placeholder="Age" /> 
     </div>
     <div>
-        <input name="city" type="text" placeholder="City" />
+        <input class="input-field" name="city" type="text" placeholder="City" />
     </div>
     <div>
-        <input name="url" type="url" placeholder="Webpage" />
+        <input class="input-field" name="url" type="url" placeholder="Webpage" />
     </div>
     <div>
-        <button>Submit</button>
+        <button class="submit-button">Submit</button>
     </div>
     <div>
         {{>errorMessage}}
     </div>
 </form>
+<div class="button-container">
+</div>

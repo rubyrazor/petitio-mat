@@ -3,26 +3,33 @@ TO DOs:
 # 1 Add required, check whether it works;
 --}}
 
-<form action="" method="POST">
+<div class="header-container">
+    <div class="header-text">First step: Register </div>
+</div>
+
+
+<form class="main-container" method="POST">
     <div>
-        <input type="text" name="first" value="First Name" required />
+        <input class="input-field" type="text" name="first" placeholder="First Name" required />
     </div>
     <div>
-        <input type="text" name="last" value="Last Name" required />
+        <input class="input-field" type="text" name="last" placeholder="Last Name" required />
     </div>
     <div>
-        <input type="text" name="email" value="Emailaddress" required />
+        <input class="input-field" type="text" name="email" placeholder="Emailaddress" required />
     </div>
     <div>
-        <input type="text" name="password" value="Password" required />
-    </div>
-    <div>
-        <input id="submitButton" type="submit" />
+        <input class="input-field" type="text" name="password" placeholder="Password" required />
     </div>
     <div>
         {{>errorMessage}}
     </div>
+    <input class="submit-button" type="submit" />
 </form>
+<div class="button-container">
+</div>
+
+
 
 {{!-- {{#if errorRegistering=true}}
     <div>
