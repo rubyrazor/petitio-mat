@@ -8,6 +8,10 @@
 /* ------------------------------- */
 
 /* ------- BODY ------- */
+#error-message {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: red;
+}
 
 ::placeholder {
     color: hotpink;
@@ -294,7 +298,6 @@ body {
 
 #helper-div1 {
     height: 150px;
-   
 }
 
 #helper-div2 {

@@ -2,7 +2,6 @@ const cookieSession = require("cookie-session");
 const express = require("express");
 const app = express();
 const hb = require("express-handlebars");
-const helmet = require("helmet");
 const COOKIE_SECRET =
     process.env.COOKIE_SECRET || require("./secrets.json").COOKIE_SECRET;
 const { authRouter } = require("./routers/auth-router.js");
@@ -35,7 +34,7 @@ app.use(
     cookieSession({
         secret: COOKIE_SECRET,
         maxAge: 1000 * 60 * 60 * 24 * 14,
-        // sameSite: true,
+        sameSite: true,
     })
 );
 
@@ -44,9 +43,6 @@ app.use((req, res, next) => {
     res.setHeader("x-frame-options", "deny");
     next();
 });
-
-// // Helmet helps secure the Express apps by setting various HTTP headers.
-app.use(helmet());
 
 // Specifies a directory to serve static content.
 app.use(express.static("./public"));
