@@ -19,6 +19,8 @@ if (process.env.NODE_ENV == "production") {
     });
 }
 
+//Random comment to commit
+
 //Sets handlebars as view engine
 app.engine("handlebars", hb());
 app.set("view engine", "handlebars");
