@@ -6,7 +6,7 @@ An online petition where supporters can register, log in, update profile informa
 
 <p align="center">
 <img src="/readme-material/landing-page.png" width="400"  alt="Landing page">
-´<img src="/readme-material/slot-machine-spin.gif" width="400" alt="Comment section">
+<img src="/readme-material/slot-machine-spin.gif" width="400" alt="Comment section">
 </p>
 
 ## Stack
