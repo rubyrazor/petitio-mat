@@ -67,7 +67,6 @@
             }
             top = top - 1;
         }
-        // console.log(top);
 
         if (top <= -goodDeeds.eq(0).outerHeight()) {
             top += goodDeeds.eq(0).outerHeight();
@@ -80,27 +79,4 @@
 
         requestAnimationFrame(moveDeeds);
     }
-
-    // --------------------------- JINGLE-TICKER ----------------------------
-
-    //     let jingleTickerContainer = $("#jingle-ticker-container");
-
-    //     function moveJingle() {
-    //         let jingleText = $(".jingle-text");
-    //         let left = jingleText.offset().left;
-    //         left--;
-
-    //         console.log("Hello!");
-
-    //         if (left <= -jingleText.eq(0).outerWidth()) {
-    //             left += jingleText.eq(0).outerWidth();
-    //             jingleTickerContainer.append(jingleText.eq(0));
-    //         }
-    //         jingleText.css({
-    //             left: left + "px",
-    //         });
-    //         requestAnimationFrame(moveJingle);
-    //     }
-
-    //     moveJingle();
 })();
