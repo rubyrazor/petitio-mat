@@ -1,4 +1,6 @@
 (function () {
+    // --------------------------- CANVAS FOR SIGNATURE ----------------------------
+
     const canvas = $("#canvas")[0];
 
     if (canvas) {
@@ -6,16 +8,16 @@
         const ctx = canvas.getContext("2d");
         ctx.strokeStyle = "hotpink";
         ctx.lineWidth = 3;
-    
+
         $("#canvas").mousedown((e) => {
             ctx.moveTo(e.offsetX, e.offsetY);
             ctx.beginPath();
-    
+
             $("#canvas").mousemove((e) => {
                 ctx.lineTo(e.offsetX, e.offsetY);
                 ctx.stroke();
             });
-    
+
             $("#canvas").mouseup(() => {
                 signatureForm.val(canvas.toDataURL());
                 $("#canvas").off("mousemove");
@@ -23,12 +25,11 @@
         });
     }
 
-
     $("#submitButton").click(() => {
         console.log("Submit was clicked.");
     });
 
-    // --------------------------- PETITIO-MAT ----------------------------
+    // --------------------------- PETITIO-MAT (SLOT MACHINE SPIN) ----------------------------
     let goodDeedsContainer = $("#good-deeds-container");
     let count = 0;
 
