@@ -23,7 +23,7 @@ I use _Handlebars templates_ to create HTML dynamically as users provide the inp
 
 ### Security
 
-I use the _Bcrypt_ library for [salted password hashing](https://crackstation.net/hashing-security.htm#normalhashing) and validation of user input. I employ the _X-Frame-Options_ HTTP response header to prevent attempts at clickjacking and _cookie-session_ middleware to secure info stored in cookies.
+I use the _Bcrypt_ library for [salted password hashing](https://crackstation.net/hashing-security.htm#normalhashing) and validation of user input. I employ the _X-Frame-Options_ HTTP response header to prevent attempts at clickjacking and _Cookie-Session_ middleware to secure info stored in cookies.
 
 ## Install & Run
 
