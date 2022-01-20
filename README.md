@@ -19,7 +19,7 @@ An online petition where supporters can register, log in, update profile informa
 
 ### Development
 
-I use _Handlebars templates_ to create HTML dynamically as users provide the input. I create with the [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and client-side JavaScript a signature field where registered users can sign the petition with the cursor. The signature and other user info is stored in a local database managed with _PostgreSQL_. To remember who has already signed the petition and to check viewing permissions, I set a cookie. I use _Express Router_ to create subrouters and channel requests.
+I use _Handlebars templates_ to create HTML dynamically as users provide the input. I employ [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) and client-side JavaScript to create a signature field where registered users can sign the petition with the cursor. The signature and other user info is stored in a local database managed with _PostgreSQL_. I use clients-side JavaScript to create the spinning reels effect known from slot machines. To remember who has already signed the petition and to check viewing permissions, I set a cookie. I use _Express Router_ to create subrouters and channel requests.
 
 ### Security
 
