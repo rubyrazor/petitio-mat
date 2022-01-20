@@ -12,6 +12,7 @@ An online petition where supporters can register, log in, update profile informa
 ## Stack
 
 ### Development
+The **client-side** ... I use the [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API) to allow users to sign for a petition with the cursor.
 
 ### Security
 
