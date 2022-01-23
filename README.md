@@ -34,7 +34,7 @@ and, last but not least, let the PETITION-MAT's random reels spin.
 
 ### Development
 
-The **client-side** is build using _Handlebars_ templates to dynamically create HTML as users provide input. The signature field is made with client-side _JavaScript_ and the [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). I also use client-side _JavaScript_ to create the spinning reels effect known from slot machines. 
+The **client-side** is build using _Handlebars_ templates to dynamically create HTML as users provide input. The signature field is made combining client-side _JavaScript_ and the [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). I also use client-side _JavaScript_ to create the spinning reels effect known from slot machines. 
 
 The **server-side** is built with _Express_ and _Node_. To remember who has already signed the petition and to check viewing permissions, I set cookies. I use _Express Router_ to create subrouters and channel requests accordingly. All user data is stored in a local database managed with _PostgreSQL_.
 
