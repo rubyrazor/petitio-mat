@@ -33,17 +33,17 @@ and, last but not least, let the PETITION-MAT's random reels spin.
 
 ### Development
 
-The **client-side** is build using _Handlebars_ templates to dynamically create HTML as users provide input. The signature field is made combining client-side _JavaScript_ and the [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). I also use client-side _JavaScript_ to create the spinning reels effect known from slot machines. 
+The **client-side** is build using _Handlebars_ templates to dynamically create HTML as users provide input. The signature field combines client-side _JavaScript_ and the [Canvas API](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API). I also use client-side _JavaScript_ to create the spinning reels effect known from slot machines. 
 
-The **server-side** is built with _Express_ and _Node_. To remember who has already signed the petition and to check viewing permissions, I set cookies. I use _Express Router_ to create subrouters and channel requests accordingly. All user data is stored in a local database managed with _PostgreSQL_.
+The **server-side** is built with _Express_ and _Node_. To remember who has already signed the petition and to check viewing permissions, I set cookies. I use _Express Router_ to create sub-routers and channel requests accordingly. All user data is stored in a local database managed with _PostgreSQL_.
 
 ### Security
 
-I use the _Bcrypt_ library for [salted password hashing](https://crackstation.net/hashing-security.htm#normalhashing) and validation of user input. I added a _X-Frame-Options_ HTTP response header to prevent attempts at clickjacking and _Cookie-Session_ middleware to encode the data stored in the cookies and prevent tampering.
+I use the _Bcrypt_ library for [salted password hashing](https://crackstation.net/hashing-security.htm#normalhashing) and validation of user input. I added a _X-Frame-Options_ HTTP response header to prevent attempts at clickjacking and _Cookie-Session_ middleware to encode the data stored in the cookies to prevent tampering.
 
 ### Testing
 
-I use _SuperTest_ to test HTTP request handling by sending specific requests to the _Express_ app and check whether the respones match my assertions.
+I use _SuperTest_ to test HTTP request handling by sending specific requests to the _Express_ app and checking whether the respones match my assertions.
 
 ## Install & Run
 
