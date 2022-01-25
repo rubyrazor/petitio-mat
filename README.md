@@ -1,16 +1,15 @@
 # PETITIO-MAT
 
-An online PETITIO-MAT where supporters can register, provide a signature and find out about the important issue they've just singed for by letting PETITO-MAT's random reels spin. I built the network in an intense one-week project while attending a full-time coding bootcamp with SPICED Academy, Berlin, from Sept 2021 to Dec 2021.
-
+An online PETITIO-MAT where supporters can register, provide a signature and determine the important issue they've just singed for by letting PETITO-MAT's random reels spin. I built the network in an intense one-week project while attending a full-time coding bootcamp with SPICED Academy, Berlin, from Sept 2021 to Dec 2021.
 
 </br>
 
 <p align="center">
-<img src="/readme-material/landing-page.png" width="400"  alt="Landing page">
-<img src="/readme-material/signature.gif" width="400" alt="Signature section">
-<img src="/readme-material/slot-machine-spin.gif" width="400" alt="Comment section">
+<img src="https://user-images.githubusercontent.com/85343170/150963524-24386f1d-1027-4904-b78b-b7628866e907.png" width="400"  alt="Landing page">
+<img src="https://user-images.githubusercontent.com/85343170/150963559-7f4f5af0-0fde-4a75-b11c-2103beca0736.gif" width="400" alt="Signature section">
+<img src="https://user-images.githubusercontent.com/85343170/150963577-497080a7-a83d-46d6-904b-ff3b5244e3dd.gif" width="400" alt="Comment section">
 </p>
-
+                                                                                                                                                  
 ## Features
 
 The PETITIO-MAT allows user to
