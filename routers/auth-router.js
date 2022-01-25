@@ -27,7 +27,7 @@ router.post("/register", requireNotLoggedIn, (req, res) => {
             });
         })
         .catch((err) => {
-            console.log("Exception in /register route", err);
+            console.log("Exception thrown in /register route", err);
             res.render("register", {
                 err: true,
             });
@@ -69,7 +69,7 @@ router.post("/login", requireNotLoggedIn, (req, res) => {
                             }
                         })
                         .catch((err) => {
-                            console.log("Exception in /login route: ", err);
+                            console.log("Exception thrown in /login route: ", err);
                             res.render("login", {
                                 err: true,
                             });

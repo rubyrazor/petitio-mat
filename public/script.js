@@ -25,10 +25,6 @@
         });
     }
 
-    $("#submitButton").click(() => {
-        console.log("Submit was clicked.");
-    });
-
     // --------------------------- PETITIO-MAT (SLOT MACHINE SPIN) ----------------------------
     let goodDeedsContainer = $("#good-deeds-container");
     let count = 0;
@@ -45,7 +41,6 @@
         let randomNumber = 300 + Math.floor(Math.random() * 90);
         let goodDeeds = $(".good-deed");
         count++;
-        console.log(count);
 
         if (count < randomNumber) {
             top = top - 35;

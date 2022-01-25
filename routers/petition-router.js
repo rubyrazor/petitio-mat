@@ -23,7 +23,7 @@ router.post("/petition", (req, res) => {
             res.redirect("/thanks");
         })
         .catch((err) => {
-            console.log("Exception in POST /petition: ", err);
+            console.log("Exception thrown in /petition route: ", err);
             res.render("petition", {
                 err: true,
             });
@@ -40,14 +40,14 @@ router.get("/thanks", requireSigned, (req, res) => {
     Promise.all([db.getCountOfUsers(), db.getSignature(userId)])
         .then((result) => {
             usersCount = result[0].rows[0].count;
-            signatureAsUrl = result[1].rows[0].signature; //Have to check whether this is still true;
+            signatureAsUrl = result[1].rows[0].signature;
             res.render("thanks", {
                 usersCount,
                 signatureAsUrl,
             });
         })
         .catch((err) => {
-            console.log("Exception in GET /thanks: ", err);
+            console.log("Exception thrown in /thanks route: ", err);
             res.render("thanks", {
                 err: true,
             });
@@ -65,7 +65,7 @@ router.post("/signature/delete", (req, res) => {
             res.redirect("/petition");
         })
         .catch((err) => {
-            console.log("Exception in POST /signature/delete : ", err);
+            console.log("Exception thrown in /signature/delete route: ", err);
             res.render("petition", {
                 err: true,
             });
@@ -84,7 +84,7 @@ router.get("/signatories", requireSigned, (req, res) => {
             });
         })
         .catch((err) => {
-            console.log("Exception in GET /signatories: ", err);
+            console.log("Exception thrown in /signatories route: ", err);
             res.render("signatories", {
                 err: true,
             });
@@ -97,14 +97,13 @@ router.get("/signatories/:city", requireSigned, (req, res) => {
     db.getSignatories(city)
         .then((result) => {
             let signatories = result.rows;
-            console.log(signatories);
             res.render("signatories", {
                 signatories,
                 city,
             });
         })
         .catch((err) => {
-            console.log("Exception in GET /signatories/:city: ", err);
+            console.log("Exception thrown in /signatories/:city route: ", err);
             res.render("signatories", {
                 err: true,
             });

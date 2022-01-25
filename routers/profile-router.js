@@ -35,7 +35,7 @@ router.post("/profile", requireLoggedIn, (req, res) => {
             res.redirect("/petition");
         })
         .catch((err) => {
-            console.log("Exception in POST /profile --> db.addProfile: ", err);
+            console.log("Exception in /profile route: ", err);
             res.render("profile", {
                 err: true,
             });
@@ -62,7 +62,7 @@ router.get("/profile/edit", requireLoggedIn, (req, res) => {
         })
         .catch((err) => {
             console.log(
-                "Exception in POST /profile/edit --> db.getAllUserDataByUserId: ",
+                "Exception thrown in /profile/edit route: ",
                 err
             );
             res.render("profile-edit", {
@@ -107,7 +107,7 @@ router.post("/profile/edit", requireLoggedIn, (req, res) => {
                 );
             })
             .catch((err) => {
-                console.log("Exception in /profile/edit route, hashPw", err);
+                console.log("Exception thrown in /profile/edit route", err);
                 res.render("register", {
                     err: true,
                 });
@@ -121,7 +121,7 @@ router.post("/profile/edit", requireLoggedIn, (req, res) => {
             res.redirect("/thanks");
         })
         .catch((err) => {
-            console.log("Exception in /profile/edit route, Promise.all: ", err);
+            console.log("Exception thrown in /profile/edit route: ", err);
             res.render("profile-edit", {
                 err: true,
             });
