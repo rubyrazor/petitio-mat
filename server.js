@@ -9,7 +9,7 @@ const { profileRouter } = require("./routers/profile-router.js");
 const { petitionRouter } = require("./routers/petition-router.js");
 const { landingRouter } = require("./routers/landing-router.js");
 
-// ??
+
 if (process.env.NODE_ENV == "production") {
     app.use((req, res, next) => {
         if (req.headers["x-forwarded-proto"].startsWith("https")) {
@@ -18,8 +18,6 @@ if (process.env.NODE_ENV == "production") {
         res.redirect(`https://${req.hostname}${req.url}`);
     });
 }
-
-//Random comment to commit
 
 //Sets handlebars as view engine
 app.engine("handlebars", hb());
@@ -49,7 +47,7 @@ app.use((req, res, next) => {
 // Specifies a directory to serve static content.
 app.use(express.static("./public"));
 
-// Parses url-encoded request bodies + makes them available as "req.body".
+// Parses url-encoded request bodies + makes them available as req.body.
 app.use(
     express.urlencoded({
         extended: false,
